@@ -15,10 +15,9 @@ def check_file_type(file_type : str) -> {}:
     }
 
 # 토큰 개수 검사.
-def check_file_token(documents)->{}:
+def check_file_token(document)->{}:
     encoder = encoding_for_model(Constants.DEFAULT_MODEL)
-    txt_document = " ".join(doc.page_content.replace("\n", " ") for doc in documents)
-    token_count = len(encoder.encode(txt_document))
+    token_count = len(encoder.encode(document))
 
     if Constants.MAX_TOKEN < token_count:
         result = {

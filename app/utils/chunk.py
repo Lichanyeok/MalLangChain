@@ -13,15 +13,18 @@ async def _pdf_loader(read_file, filetype) :
     loader = PyPDFLoader(tmp_path)
     documents = loader.load()
     os.remove(tmp_path)
-    return documents
+
+    txt_document = " ".join(doc.page_content.replace("\n", " ") for doc in documents)
+    return txt_document
 
 async def _docx_loader():
     return
 
-def load_document(read_file, filetype:str) -> []:
+async def load_document(read_file, filetype:str) -> []:
     document = []
     if ".pdf" == filetype:
-        document = _pdf_loader(read_file, filetype)
+        document = await _pdf_loader(read_file, filetype)
+
     return document
 
 
@@ -31,5 +34,5 @@ def text_spliter(document):
         chunk_overlap=200
     )
 
-    chunks = spliter.split_documents(document)
+    chunks = spliter.split_text(document)
     return chunks

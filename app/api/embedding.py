@@ -22,15 +22,22 @@ async def file_embedding():
         pi = os.getenv("PINECONE_INDEX_NAME")
         aik = os.getenv("OPENAI_API_KEY")
 
-        embeddings = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"))
         pc = Pinecone(api_key =pik)
         index = pc.Index(pi)
 
-        LangchaninPincone(
-            index=index,
-            documents=chunks,
-            embedding=embeddings,
-            index_name=pi
-        )
+
+        embeddings = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"))
+        vectors = embeddings.embed_documents(chunks)
+
+        to_upsert = [
+            {
+                "id":f"filename_{i}",
+                "values":vector,
+                "metadata":{"content":chunk}
+            }
+            for i , (chunk, vector) in enumerate(zip(chunks,vectors))
+        ]
+
+        index.upsert(to_upsert)
 
     return EMBEDDING_LIST

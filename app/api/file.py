@@ -44,10 +44,10 @@ async def file_staging(files : list[UploadFile] = File(...)):
 
         #0 : 처리대기, 1 : 처리완료 , 2 : 처리실패
         EMBEDDING_LIST.append({
-            "file_name":file_name ,
+            "filename":file_name ,
             "document": document ,
             "status" : 0 ,
             "message" : "처리 대기중입니다."
         })
 
-    return FILE_CACHE
+    return EMBEDDING_LIST
