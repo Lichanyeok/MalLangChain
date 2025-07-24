@@ -1,7 +1,8 @@
 from fastapi import APIRouter, UploadFile,File
 from typing import Dict , List
+from app.api.instance import Embedding,LangchainPinecone
 from app.utils.validation import check_file_type, check_file_token
-from app.utils.chunk import load_document
+from app.utils.chunk import load_document, text_spliter
 import os
 
 
@@ -49,5 +50,30 @@ async def file_staging(files : list[UploadFile] = File(...)):
             "status" : 0 ,
             "message" : "처리 대기중입니다."
         })
+
+    return EMBEDDING_LIST
+
+@router.get("/embedding")
+async def file_embedding():
+    for el in EMBEDDING_LIST:
+        document = el["document"]
+        chunks = text_spliter(document)
+
+        lpi = LangchainPinecone()
+        index = lpi.getPineconeIndex()
+
+        embeddings = Embedding().getEmbedding()
+        vectors = embeddings.embed_documents(chunks)
+
+        to_upsert = [
+            {
+                "id":f"filename_{i}",
+                "values":vector,
+                "metadata":{"content":chunk}
+            }
+            for i , (chunk, vector) in enumerate(zip(chunks,vectors))
+        ]
+
+        index.upsert(to_upsert)
 
     return EMBEDDING_LIST

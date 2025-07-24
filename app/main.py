@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from app.api import file_router, embedding_router
+from app.api import file_router, chat_router
 
 app = FastAPI()
 
 app.include_router(file_router , prefix="/file")
-app.include_router(embedding_router , prefix="/embedding")
+app.include_router(chat_router , prefix="/chat")
 
 @app.get("/")
 async def root():
