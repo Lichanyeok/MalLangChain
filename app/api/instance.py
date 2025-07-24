@@ -1,5 +1,5 @@
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_community.llms import HuggingFacePipeline
+from langchain_huggingface import HuggingFacePipeline
 from transformers import pipeline
 from pinecone import Pinecone
 from dotenv import load_dotenv
