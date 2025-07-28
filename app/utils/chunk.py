@@ -14,7 +14,7 @@ async def _pdf_loader(read_file, filetype) :
     documents = loader.load()
     os.remove(tmp_path)
 
-    txt_document = " ".join(doc.page_content.replace("\n", " ") for doc in documents)
+    txt_document = " ".join(doc.page_content.replace("\n\n", " ") for doc in documents)
     return txt_document
 
 async def _docx_loader():
@@ -30,8 +30,8 @@ async def load_document(read_file, filetype:str) -> []:
 
 def text_spliter(document):
     spliter = RecursiveCharacterTextSplitter(
-        chunk_size=800,
-        chunk_overlap=200
+        chunk_size=512,
+        chunk_overlap=80
     )
 
     chunks = spliter.split_text(document)
